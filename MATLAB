@@ -1,0 +1,51 @@
+% =========================================================================
+% MATLAB Simulation: Corneal Topography and Astigmatism
+% Description: This script models the 3D parabolic surface of the human cornea.
+% It compares a normal, rotationally symmetric cornea (circular paraboloid) 
+% with an astigmatic cornea (elliptical paraboloid with different curvatures).
+% =========================================================================
+
+clc; clear; close all;
+
+% 1. Create a 2D Spatial Grid for the Cornea
+% We simulate a cornea with a diameter of roughly 10 mm (-5 to 5 on X and Y)
+[X, Y] = meshgrid(linspace(-5, 5, 50));
+
+% 2. Define Radii of Curvature (in mm)
+R_normal = 7.8;       % Average radius of curvature for a healthy cornea
+Rx_astig = 6.5;       % Steeper meridian (causing refractive error)
+Ry_astig = 9.0;       % Flatter meridian
+
+% 3. Calculate the 3D Parabolic Surfaces
+% Using the biconic approximation equation: Z = (X^2 / 2Rx) + (Y^2 / 2Ry)
+
+% Normal Cornea: Rx and Ry are equal (Symmetric Paraboloid)
+Z_normal = (X.^2 + Y.^2) / (2 * R_normal);
+
+% Astigmatic Cornea: Rx and Ry are unequal (Asymmetric Paraboloid)
+Z_astigmatic = (X.^2 / (2 * Rx_astig)) + (Y.^2 / (2 * Ry_astig));
+
+% 4. Plot the Normal Cornea
+figure('Name', 'Ophthalmology Simulation: Cornea Models', 'Position', [100, 100, 900, 400], 'Color', 'w');
+
+subplot(1, 2, 1);
+surf(X, Y, Z_normal, 'EdgeColor', 'none');
+colormap(gca, 'parula'); % Color represents depth/elevation
+title('Normal Cornea (Symmetric Parabola)', 'FontSize', 12);
+xlabel('X (mm)'); ylabel('Y (mm)'); zlabel('Elevation Z (mm)');
+axis([-5 5 -5 5 0 3]);
+view(-30, 45);
+camlight; lighting gouraud; % Add lighting for better 3D depth perception
+
+% 5. Plot the Astigmatic Cornea
+subplot(1, 2, 2);
+surf(X, Y, Z_astigmatic, 'EdgeColor', 'none');
+colormap(gca, 'jet'); % Using a different colormap to highlight the distortion
+title('Astigmatic Cornea (Asymmetric Parabola)', 'FontSize', 12);
+xlabel('X (mm)'); ylabel('Y (mm)'); zlabel('Elevation Z (mm)');
+axis([-5 5 -5 5 0 3]);
+view(-30, 45);
+camlight; lighting gouraud;
+
+% Add a main title for the entire figure
+sgtitle('Biomechanical Modeling of the Cornea Using Paraboloids', 'FontSize', 14, 'FontWeight', 'bold');
